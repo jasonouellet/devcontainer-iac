@@ -1,0 +1,17 @@
+{
+    "image": "jasonouellet/dev-iac",
+    
+    "customizations": {
+        "vscode": {
+          "extensions": [
+            "don-jayamanne.gitHistory",
+            "mhutchie.git-graph",
+            "redhat.yaml",
+            "david-anson.markdownlint",
+            "yu-zhang.markdown-all-in-one"
+            ]
+        }
+      },
+
+      "forwardPorts": [3000]
+}
