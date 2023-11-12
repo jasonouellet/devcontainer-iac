@@ -1,42 +1,60 @@
-name: Build and publish a Docker image
+name: Build and Push Docker image
 on:
   push:
   pull_request:
+
 jobs:
   build:
-    name: Build & push docker image
+    name: Build and Push
     runs-on: ubuntu-latest
+
     env:
-      IMG_NAME: ${{ github.repository }}
+      IMG_NAME: dev-iac
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v3
+  
+    - name: Docker Hub Login
+      id: docker-login
+      uses: docker/login-action@v3.0.0
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        # Specifies whether the given registry is ECR (auto, true or false)
+        ecr: auto
+        logout: true
 
-      - name: Debug
-        run: |
-          echo "github.ref -> {{ github.ref }}"
- 
-      - name: Docker metadata
-        id: metadata
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.IMG_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        if: ${{ github.ref_type == 'tag' }}
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: ${{ github.event.base_ref =='refs/heads/main' && github.ref_type == 'tag' && !startsWith(github.ref, 'refs/tags/v0.')}}
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
+    - name: Docker Metadata action
+      id: docker-metadata
+      uses: docker/metadata-action@v5.0.0
+      with:
+        # Where to get context data. Allowed options are "workflow"  (default), "git".
+        #context: # default is workflow
+        # List of Docker images to use as base name for tags
+        images: ${{ env.IMG_NAME }}
+        # List of tags as key-value pair attributes
+        tags: latest # optional
+        # Flavors to apply
+        #flavor: # optional
+        # List of custom labels
+        labels: iac # optional
+        # Separator to use for tags output (default \n)
+        #sep-tags: # optional
+        # Separator to use for labels output (default \n)
+        #sep-labels: # optional
+        # Bake target name (default docker-metadata-action)
+        #bake-target: # optional
+    
+    - name: Build and push Docker image
+      id: docker-build-push
+      uses: docker/build-push-action@v5.0.0
+      with:
+        context: .
+        labels: ${{ steps.metadata.outputs.labels }}
+        no-cache: true
+        outputs: docker.io/jasonouellet/dev-iac
+        push: true
+        sbom: true
+        tags: ${{ steps.metadata.outputs.tags }}
