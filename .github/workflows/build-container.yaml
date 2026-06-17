@@ -14,47 +14,37 @@ jobs:
     steps:
     - name: Checkout
       id: checkout
-      uses: actions/checkout@v3
-  
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      id: setup-buildx
+      uses: docker/setup-buildx-action@v3
+
     - name: Docker Hub Login
       id: docker-login
-      uses: docker/login-action@v3.0.0
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        # Specifies whether the given registry is ECR (auto, true or false)
         ecr: auto
         logout: true
 
     - name: Docker Metadata action
       id: docker-metadata
-      uses: docker/metadata-action@v5.0.0
+      uses: docker/metadata-action@v5
       with:
-        # Where to get context data. Allowed options are "workflow"  (default), "git".
-        #context: # default is workflow
-        # List of Docker images to use as base name for tags
         images: ${{ env.IMG_NAME }}
-        # List of tags as key-value pair attributes
-        tags: latest # optional
-        # Flavors to apply
-        #flavor: # optional
-        # List of custom labels
-        labels: iac # optional
-        # Separator to use for tags output (default \n)
-        #sep-tags: # optional
-        # Separator to use for labels output (default \n)
-        #sep-labels: # optional
-        # Bake target name (default docker-metadata-action)
-        #bake-target: # optional
-    
+        tags: latest
+        labels: iac
+
     - name: Build and push Docker image
       id: docker-build-push
-      uses: docker/build-push-action@v5.0.0
+      uses: docker/build-push-action@v6
       with:
         context: .
-        labels: ${{ steps.metadata.outputs.labels }}
+        labels: ${{ steps.docker-metadata.outputs.labels }}
         no-cache: true
         outputs: docker.io/jasonouellet/dev-iac
         push: true
         sbom: true
-        tags: ${{ steps.metadata.outputs.tags }}
+        tags: ${{ steps.docker-metadata.outputs.tags }}
