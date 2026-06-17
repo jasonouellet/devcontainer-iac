@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMG_NAME: dev-iac
+      IMG_NAME: jasonouellet/dev-iac
 
     steps:
     - name: Checkout
@@ -44,7 +44,6 @@ jobs:
         context: .
         labels: ${{ steps.docker-metadata.outputs.labels }}
         no-cache: true
-        outputs: docker.io/jasonouellet/dev-iac
         push: true
         sbom: true
         tags: ${{ steps.docker-metadata.outputs.tags }}
