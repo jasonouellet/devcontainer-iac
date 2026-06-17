@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
+  "enabledManagers": ["github-actions", "dockerfile"],
   "labels": ["dependencies"],
   "schedule": ["every weekend"],
   "packageRules": [

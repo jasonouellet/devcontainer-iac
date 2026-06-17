@@ -1,8 +1,4 @@
-ARG OS=almalinux
-ARG OS_IMAGE=9-base
-ARG OS_IMAGE_VERSION=latest
-
-FROM $OS/$OS_IMAGE:$OS_IMAGE_VERSION AS BASE_UPDATE
+FROM almalinux/9-base:latest AS BASE_UPDATE
 
 # Préparer OS et outil YUM
 RUN yum upgrade -y
