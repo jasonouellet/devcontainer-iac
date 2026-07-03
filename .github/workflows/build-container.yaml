@@ -14,15 +14,15 @@ jobs:
     steps:
     - name: Checkout
       id: checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@f43a0e5ff2bd294095338146c1a4cfc3d89b719e # v7
 
     - name: Set up Docker Buildx
       id: setup-buildx
-      uses: docker/setup-buildx-action@v4
+      uses: docker/setup-buildx-action@c47bca50b59c41d51c5e0dc089e1199eecee56ac # v4
 
     - name: Docker Hub Login
       id: docker-login
-      uses: docker/login-action@v4
+      uses: docker/login-action@0d4c9c5ea7693da7b8450878622aafdc31584291 # v4
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -31,7 +31,7 @@ jobs:
 
     - name: Docker Metadata action
       id: docker-metadata
-      uses: docker/metadata-action@v6
+      uses: docker/metadata-action@818d4ff7bfcd49fa11f6521ca38b6ecc31baabf8 # v6
       with:
         images: ${{ env.IMG_NAME }}
         tags: latest
@@ -39,7 +39,7 @@ jobs:
 
     - name: Build and push Docker image
       id: docker-build-push
-      uses: docker/build-push-action@v7
+      uses: docker/build-push-action@4a13e500e55461fb1c2b59b0506629cda7d78e3d # v7
       with:
         context: .
         labels: ${{ steps.docker-metadata.outputs.labels }}
