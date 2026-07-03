@@ -1,8 +1,4 @@
-ARG OS=almalinux
-ARG OS_IMAGE=9-base
-ARG OS_IMAGE_VERSION=latest
-
-FROM $OS/$OS_IMAGE:$OS_IMAGE_VERSION AS BASE_UPDATE
+FROM almalinux/9-base:latest AS base_update
 
 # Préparer OS et outil YUM
 RUN yum upgrade -y
@@ -11,7 +7,7 @@ RUN yum install -y yum-utils
 # Ajout dépôts
 RUN yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 
-FROM BASE_UPDATE AS DEV_TOOLS
+FROM base_update AS dev_tools
 
 COPY . .
 
@@ -21,7 +17,7 @@ RUN yum install -y python pip terraform packer
 
 RUN pip install pre-commit
 
-FROM DEV_TOOLS AS MAIN
+FROM dev_tools AS main
 
 RUN chmod 777 ./kubectl.sh
 RUN ./kubectl.sh
