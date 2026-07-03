@@ -6,6 +6,7 @@
   "enabledManagers": ["github-actions", "dockerfile"],
   "labels": ["dependencies"],
   "schedule": ["every weekend"],
+  "enabledManagers": ["github-actions", "dockerfile"],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
